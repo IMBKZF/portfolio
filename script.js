@@ -220,7 +220,21 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       submitBtn.disabled = true;
 
-      setTimeout(() => {
+      // Collect form data
+      const formData = new FormData(contactForm);
+      // Optional: add a hidden subject line specifically for the email subject
+      formData.append('_subject', 'New Message from Portfolio Website!');
+      
+      // Use Formsubmit AJAX endpoint (Free, no backend required)
+      fetch('https://formsubmit.co/ajax/miguelbiana@gmail.com', {
+        method: 'POST',
+        headers: { 
+          'Accept': 'application/json'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
         submitBtn.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           Message Sent!
@@ -232,8 +246,17 @@ document.addEventListener('DOMContentLoaded', () => {
           submitBtn.style.background = '';
           submitBtn.disabled = false;
           contactForm.reset();
-        }, 2500);
-      }, 1500);
+        }, 3500);
+      })
+      .catch(error => {
+        submitBtn.innerHTML = 'Error Sending. Try Again!';
+        submitBtn.style.background = '#d32f2f';
+        setTimeout(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.style.background = '';
+          submitBtn.disabled = false;
+        }, 3000);
+      });
     });
   }
 
